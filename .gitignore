@@ -24,7 +24,7 @@
 .DS_Store
 *.pem
 dokz.md
-dokz
+/dokz
 
 # debug
 npm-debug.log*
