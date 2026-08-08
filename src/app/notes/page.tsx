@@ -1,0 +1,133 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CircularProgress from "@mui/material/CircularProgress";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
+import Alert from "@mui/material/Alert";
+import { getNotes, createNote } from "@/lib/api/notes";
+import { Note } from "@/types/Note";
+
+interface NoteFormValues {
+  title: string;
+  content: string;
+}
+
+export default function NotesPage() {
+  const router = useRouter();
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [formError, setFormError] = useState("");
+  const notesFound = notes.length > 0;
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<NoteFormValues>();
+
+  useEffect(() => {
+    getNotes()
+      .then(setNotes)
+      .catch(() => router.push("/login"))
+      .finally(() => setLoading(false));
+  }, [router]);
+
+  const onCreateNote = async ({ title, content }: NoteFormValues) => {
+    setFormError("");
+    try {
+      const newNote = await createNote(title, content);
+      setNotes((prev) => [newNote, ...prev]);
+      reset();
+      setDialogOpen(false);
+    } catch (err) {
+      setFormError(
+        err instanceof Error ? err.message : "Failed to create note"
+      );
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ maxWidth: 600, mx: "auto", mt: 8 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="h4">My Notes</Typography>
+        <Button variant="contained" onClick={() => setDialogOpen(true)}>
+          New Note
+        </Button>
+      </Box>
+
+      {!notesFound && <Typography>No notes yet.</Typography>}
+      {notesFound &&
+        notes.map((note) => (
+          <Card key={note._id?.toString()} sx={{ mb: 2 }}>
+            <CardContent>
+              <Typography variant="h6">{note.title}</Typography>
+              <Typography variant="body2">{note.content}</Typography>
+            </CardContent>
+          </Card>
+        ))}
+
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <Box component="form" onSubmit={handleSubmit(onCreateNote)}>
+          <DialogTitle>New Note</DialogTitle>
+          <DialogContent
+            sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+          >
+            {formError && <Alert severity="error">{formError}</Alert>}
+            <TextField
+              label="Title"
+              autoFocus
+              {...register("title", { required: "Title is required" })}
+              error={!!errors.title}
+              helperText={errors.title?.message}
+            />
+            <TextField
+              label="Content"
+              multiline
+              rows={4}
+              {...register("content")}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+            <Button type="submit" variant="contained" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save"}
+            </Button>
+          </DialogActions>
+        </Box>
+      </Dialog>
+    </Box>
+  );
+}
