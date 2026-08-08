@@ -8,8 +8,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body;
 
-    if (stringIsBlank(email)) return NextResponse.json({ error: "Email is required" }, { status: 400 });
-    
+    if (stringIsBlank(email)) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    }
     if (stringIsBlank(password)) {
       return NextResponse.json(
         { error: "Password is required" },

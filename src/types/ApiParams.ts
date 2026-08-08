@@ -1,7 +1,7 @@
-export interface ApiParams<T>{
-    params:Promise<T>
+export interface ApiParams<T> {
+  params: Promise<T>;
 }
 
-export interface IdParam{
-    id:string;
+export interface IdParam {
+  id: string;
 }

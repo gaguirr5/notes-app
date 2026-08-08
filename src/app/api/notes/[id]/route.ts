@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserIdFromRequest} from "@/lib/auth";
+import { getUserIdFromRequest } from "@/lib/auth";
 import NoteService from "@/services/NoteService";
 import NotesRepository from "@/repositories/mongodb/NotesRepository";
 import { ApiParams, IdParam } from "@/types/ApiParams";
@@ -9,8 +9,9 @@ export async function GET(
   { params }: ApiParams<IdParam>
 ) {
   const userId = getUserIdFromRequest(request);
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const { id } = await params;
     const notesRepository = new NotesRepository();
@@ -28,8 +29,9 @@ export async function PUT(
   { params }: ApiParams<IdParam>
 ) {
   const userId = getUserIdFromRequest(request);
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const { id } = await params;
     await getOwnedNoteOrThrow(id, userId);
