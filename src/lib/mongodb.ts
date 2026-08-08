@@ -2,9 +2,7 @@ import { MongoClient, Db } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
 
-if (!uri) {
-  throw new Error("Missing MONGODB_URI environment variable");
-}
+if (!uri) throw new Error("Missing MONGODB_URI environment variable");
 
 // In dev, Next.js hot-reloads modules on every file change.
 // Without caching, that would spawn a new MongoClient (and new connection)
