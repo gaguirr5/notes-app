@@ -9,15 +9,23 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body;
 
-    if (stringIsBlank(email)) return NextResponse.json({ error: "Email is required" }, { status: 400 });
-    if (stringIsBlank(password)) return NextResponse.json({ error: "Password is required" }, { status: 400 });
+    if (stringIsBlank(email)){
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });}
+    if (stringIsBlank(password)){
+      return NextResponse.json(
+        { error: "Password is required" },
+        { status: 400 }
+      )}
 
     const usersRepository = new UsersRepository();
     const userService = new UserService(usersRepository);
     const user = await userService.verifyLogin(email, password);
 
     if (!user || !user._id) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid email or password" },
+        { status: 401 }
+      );
     }
 
     const token = signToken({ userId: user._id.toString() });
