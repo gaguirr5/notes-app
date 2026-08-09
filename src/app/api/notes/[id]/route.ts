@@ -19,7 +19,7 @@ export async function GET(
     const note = await noteService.getNoteForUser(id, userId);
 
     return NextResponse.json(note);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Note not found" }, { status: 404 });
   }
 }
@@ -43,7 +43,7 @@ export async function PUT(
     const updated = await notesRepository.update(id, { title, content });
 
     return NextResponse.json(updated);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Note not found" }, { status: 404 });
   }
 }
@@ -65,7 +65,7 @@ export async function DELETE(
     await notesRepository.remove(id);
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Note not found" }, { status: 404 });
   }
 }
