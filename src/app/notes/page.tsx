@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -22,7 +23,6 @@ import { useState } from "react";
 import { createNote, updateNote, deleteNote } from "@/lib/api/notes";
 import { Note, NoteFormValues } from "@/types/Note";
 import useNotes from "@/hooks/useNotes";
-import { Grid } from "@mui/material";
 
 export default function NotesPage() {
   const router = useRouter();
@@ -68,7 +68,7 @@ export default function NotesPage() {
       } else {
         await createNote(title, content);
       }
-      await mutate(); // re-fetch and update the cache
+      await mutate();
       setDialogOpen(false);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Failed to save note");
@@ -94,8 +94,8 @@ export default function NotesPage() {
   }
 
   return (
-    <Box sx={{ maxWidth: 600, mx: "auto", mt: 8 }}>
-      <Box sx={{ mb: 3 }}>
+    <Container maxWidth="xl" sx={{ mt: { xs: 4, sm: 8 } }}>
+      <Box sx={{ mb: 3, textAlign: "center" }}>
         <Typography variant="h4">My Wall</Typography>
         <Button variant="contained" onClick={openCreateDialog} sx={{ mt: 1 }}>
           New Note
@@ -103,30 +103,32 @@ export default function NotesPage() {
       </Box>
 
       {!notesFound && <Typography>No notes yet.</Typography>}
-      <Grid container spacing={2}>
+
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
         {notesFound &&
-          notes!.map((note) => (
-            <Grid key={note._id?.toString()} size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">{note.title}</Typography>
-                  <Typography variant="body2">{note.content}</Typography>
-                </CardContent>
-                <CardActions>
-                  <IconButton onClick={() => openEditDialog(note)} size="small">
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => onDeleteNote(note._id!.toString())}
-                    size="small"
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </CardActions>
-              </Card>
-            </Grid>
+          notes.map((note) => (
+            <Card
+              key={note._id?.toString()}
+              sx={{ width: { xs: "100%", sm: 280 } }}
+            >
+              <CardContent>
+                <Typography variant="h6">{note.title}</Typography>
+                <Typography variant="body2">{note.content}</Typography>
+              </CardContent>
+              <CardActions>
+                <IconButton onClick={() => openEditDialog(note)} size="small">
+                  <EditIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  onClick={() => onDeleteNote(note._id!.toString())}
+                  size="small"
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </CardActions>
+            </Card>
           ))}
-      </Grid>
+      </Box>
 
       <Dialog
         open={dialogOpen}
@@ -162,6 +164,6 @@ export default function NotesPage() {
           </DialogActions>
         </Box>
       </Dialog>
-    </Box>
+    </Container>
   );
 }

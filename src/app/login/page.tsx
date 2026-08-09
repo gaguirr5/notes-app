@@ -40,7 +40,7 @@ export default function LoginPage() {
       sx={{
         maxWidth: 400,
         mx: "auto",
-        mt: 8,
+        mt: { xs: 4, sm: 8 },
         display: "flex",
         flexDirection: "column",
         gap: 2,

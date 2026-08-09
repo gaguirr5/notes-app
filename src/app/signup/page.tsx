@@ -39,7 +39,7 @@ export default function SignupPage() {
       sx={{
         maxWidth: 400,
         mx: "auto",
-        mt: 8,
+        mt: { xs: 4, xm: 8 },
         display: "flex",
         flexDirection: "column",
         gap: 2,
