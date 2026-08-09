@@ -16,12 +16,6 @@ export function useColorMode() {
   return useContext(ColorModeContext);
 }
 
-const baseThemeOptions = {
-  primary: {
-    main: "#cd9357",
-  },
-};
-
 const navBackgroundByMode = {
   light: "#cd9357",
   dark: "#1976d2",
@@ -32,25 +26,20 @@ const navTextColorByMode = {
   dark: "#f5f5f5",
 };
 
-export default function ThemeRegistry({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ThemeRegistry({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<"light" | "dark">("light");
 
-  useEffect(() => {
-    const stored = localStorage.getItem("colorMode");
-    if (stored === "light" || stored === "dark") {
-      setMode(stored);
-      return;
-    }
+useEffect(() => {
+  const stored = localStorage.getItem("colorMode");
+  if (stored === "light" || stored === "dark") {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing initial mode from localStorage on mount, not a derived-state anti-pattern
+    setMode(stored);
+    return;
+  }
 
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    setMode(prefersDark ? "dark" : "light");
-  }, []);
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  setMode(prefersDark ? "dark" : "light");
+}, []);
 
   const colorMode = useMemo(
     () => ({
