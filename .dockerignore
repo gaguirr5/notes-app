@@ -1,0 +1,9 @@
+node_modules
+.next
+tests
+cypress
+.git
+.env.local
+.env.test
+*.md
+.vscode

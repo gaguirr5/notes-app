@@ -8,9 +8,5 @@ export default defineConfig({
     environment: "node",
     globals: true,
     include: ["tests/**/*.test.ts"],
-    env: {
-      MONGODB_URI: "mongodb://fake-uri-for-tests",
-      JWT_SECRET: "fake-secret-for-tests",
-    },
   },
 });
