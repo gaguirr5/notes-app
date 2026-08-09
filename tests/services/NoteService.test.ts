@@ -35,11 +35,15 @@ describe("NoteService", () => {
 
   describe("create", () => {
     it("throws when title is blank", async () => {
-      await expect(noteService.create("user-1", "")).rejects.toThrow("Title is required");
+      await expect(noteService.create("user-1", "")).rejects.toThrow(
+        "Title is required"
+      );
     });
 
     it("defaults content to an empty string when omitted", async () => {
-      vi.mocked(mockRepo.create).mockImplementation(async (note) => note as Note);
+      vi.mocked(mockRepo.create).mockImplementation(
+        async (note) => note as Note
+      );
 
       await noteService.create("user-1", "My Title");
 
@@ -53,17 +57,19 @@ describe("NoteService", () => {
     it("throws when the note doesn't exist", async () => {
       vi.mocked(mockRepo.findById).mockResolvedValue(null);
 
-      await expect(noteService.getNoteForUser("note-1", "user-1")).rejects.toThrow(
-        "Note not found"
-      );
+      await expect(
+        noteService.getNoteForUser("note-1", "user-1")
+      ).rejects.toThrow("Note not found");
     });
 
     it("throws when the note belongs to a different user", async () => {
-      vi.mocked(mockRepo.findById).mockResolvedValue(makeNote({ userId: "someone-else" }));
-
-      await expect(noteService.getNoteForUser("note-1", "user-1")).rejects.toThrow(
-        "Note not found"
+      vi.mocked(mockRepo.findById).mockResolvedValue(
+        makeNote({ userId: "someone-else" })
       );
+
+      await expect(
+        noteService.getNoteForUser("note-1", "user-1")
+      ).rejects.toThrow("Note not found");
     });
 
     it("returns the note when it belongs to the requesting user", async () => {

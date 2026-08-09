@@ -21,15 +21,15 @@ describe("UserService", () => {
 
   describe("signup", () => {
     it("throws for an invalid email", async () => {
-      await expect(userService.signup("not-an-email", "password123")).rejects.toThrow(
-        "Invalid email address"
-      );
+      await expect(
+        userService.signup("not-an-email", "password123")
+      ).rejects.toThrow("Invalid email address");
     });
 
     it("throws for a short password", async () => {
-      await expect(userService.signup("test@test.com", "short")).rejects.toThrow(
-        "Password must be at least 8 characters"
-      );
+      await expect(
+        userService.signup("test@test.com", "short")
+      ).rejects.toThrow("Password must be at least 8 characters");
     });
 
     it("throws when the email is already in use", async () => {
@@ -39,9 +39,9 @@ describe("UserService", () => {
         createdAt: new Date(),
       } as User);
 
-      await expect(userService.signup("test@test.com", "password123")).rejects.toThrow(
-        "Email already in use"
-      );
+      await expect(
+        userService.signup("test@test.com", "password123")
+      ).rejects.toThrow("Email already in use");
     });
 
     it("creates a user with a hashed password when input is valid", async () => {
