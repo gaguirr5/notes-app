@@ -9,3 +9,8 @@ export interface Note {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface NoteFormValues {
+  title: string;
+  content: string;
+}

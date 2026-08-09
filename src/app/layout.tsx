@@ -4,6 +4,8 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "@/theme";
+import Navbar from "@/components/Navbar";
+import { getAuthState } from "@/lib/getAuthState";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,13 +23,16 @@ export const metadata: Metadata = {
   description: "A simple full-stack notes app",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const isLoggedIn = await getAuthState();
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
+            <Navbar isLoggedIn={isLoggedIn} />
             {children}
           </ThemeProvider>
         </AppRouterCacheProvider>

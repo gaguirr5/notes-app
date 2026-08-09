@@ -1,35 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
 import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
-import { getNotes, createNote } from "@/lib/api/notes";
-import { Note } from "@/types/Note";
-
-interface NoteFormValues {
-  title: string;
-  content: string;
-}
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { useState } from "react";
+import { createNote, updateNote, deleteNote } from "@/lib/api/notes";
+import { Note, NoteFormValues } from "@/types/Note";
+import useNotes from "@/hooks/useNotes";
 
 export default function NotesPage() {
   const router = useRouter();
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: notes, error, isLoading, mutate } = useNotes();
+
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [formError, setFormError] = useState("");
-  const notesFound = notes.length > 0;
 
   const {
     register,
@@ -38,28 +38,53 @@ export default function NotesPage() {
     formState: { errors, isSubmitting },
   } = useForm<NoteFormValues>();
 
-  useEffect(() => {
-    getNotes()
-      .then(setNotes)
-      .catch(() => router.push("/login"))
-      .finally(() => setLoading(false));
-  }, [router]);
+  if (error) {
+    router.push("/login");
+    return null;
+  }
 
-  const onCreateNote = async ({ title, content }: NoteFormValues) => {
+  const notesFound = !!notes && notes.length > 0;
+
+  const openCreateDialog = () => {
+    setEditingNote(null);
+    reset({ title: "", content: "" });
+    setFormError("");
+    setDialogOpen(true);
+  };
+
+  const openEditDialog = (note: Note) => {
+    setEditingNote(note);
+    reset({ title: note.title, content: note.content });
+    setFormError("");
+    setDialogOpen(true);
+  };
+
+  const onSubmitNote = async ({ title, content }: NoteFormValues) => {
     setFormError("");
     try {
-      const newNote = await createNote(title, content);
-      setNotes((prev) => [newNote, ...prev]);
-      reset();
+      if (editingNote) {
+        await updateNote(editingNote._id!.toString(), title, content);
+      } else {
+        await createNote(title, content);
+      }
+      await mutate(); // re-fetch and update the cache
       setDialogOpen(false);
     } catch (err) {
-      setFormError(
-        err instanceof Error ? err.message : "Failed to create note"
-      );
+      setFormError(err instanceof Error ? err.message : "Failed to save note");
     }
   };
 
-  if (loading) {
+  const onDeleteNote = async (id: string) => {
+    if (!confirm("Delete this note?")) return;
+    try {
+      await deleteNote(id);
+      await mutate();
+    } catch {
+      alert("Failed to delete note");
+    }
+  };
+
+  if (isLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
         <CircularProgress />
@@ -78,7 +103,7 @@ export default function NotesPage() {
         }}
       >
         <Typography variant="h4">My Notes</Typography>
-        <Button variant="contained" onClick={() => setDialogOpen(true)}>
+        <Button variant="contained" onClick={openCreateDialog}>
           New Note
         </Button>
       </Box>
@@ -91,6 +116,17 @@ export default function NotesPage() {
               <Typography variant="h6">{note.title}</Typography>
               <Typography variant="body2">{note.content}</Typography>
             </CardContent>
+            <CardActions>
+              <IconButton onClick={() => openEditDialog(note)} size="small">
+                <EditIcon fontSize="small" />
+              </IconButton>
+              <IconButton
+                onClick={() => onDeleteNote(note._id!.toString())}
+                size="small"
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </CardActions>
           </Card>
         ))}
 
@@ -100,8 +136,8 @@ export default function NotesPage() {
         fullWidth
         maxWidth="sm"
       >
-        <Box component="form" onSubmit={handleSubmit(onCreateNote)}>
-          <DialogTitle>New Note</DialogTitle>
+        <Box component="form" onSubmit={handleSubmit(onSubmitNote)}>
+          <DialogTitle>{editingNote ? "Edit Note" : "New Note"}</DialogTitle>
           <DialogContent
             sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
           >
