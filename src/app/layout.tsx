@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import theme from "@/theme";
+import ThemeRegistry from "@/components/ThemeRegistry";
 import Navbar from "@/components/Navbar";
 import { getAuthState } from "@/lib/getAuthState";
 import "./globals.css";
@@ -19,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Notes App",
+  title: "Wall Notes",
   description: "A simple full-stack notes app",
 };
 
@@ -30,11 +28,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
+          <ThemeRegistry>
             <Navbar isLoggedIn={isLoggedIn} />
             {children}
-          </ThemeProvider>
+          </ThemeRegistry>
         </AppRouterCacheProvider>
       </body>
     </html>

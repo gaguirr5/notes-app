@@ -22,6 +22,7 @@ import { useState } from "react";
 import { createNote, updateNote, deleteNote } from "@/lib/api/notes";
 import { Note, NoteFormValues } from "@/types/Note";
 import useNotes from "@/hooks/useNotes";
+import { Grid } from "@mui/material";
 
 export default function NotesPage() {
   const router = useRouter();
@@ -94,41 +95,38 @@ export default function NotesPage() {
 
   return (
     <Box sx={{ maxWidth: 600, mx: "auto", mt: 8 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
-        <Typography variant="h4">My Notes</Typography>
-        <Button variant="contained" onClick={openCreateDialog}>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4">My Wall</Typography>
+        <Button variant="contained" onClick={openCreateDialog} sx={{ mt: 1 }}>
           New Note
         </Button>
       </Box>
 
       {!notesFound && <Typography>No notes yet.</Typography>}
-      {notesFound &&
-        notes.map((note) => (
-          <Card key={note._id?.toString()} sx={{ mb: 2 }}>
-            <CardContent>
-              <Typography variant="h6">{note.title}</Typography>
-              <Typography variant="body2">{note.content}</Typography>
-            </CardContent>
-            <CardActions>
-              <IconButton onClick={() => openEditDialog(note)} size="small">
-                <EditIcon fontSize="small" />
-              </IconButton>
-              <IconButton
-                onClick={() => onDeleteNote(note._id!.toString())}
-                size="small"
-              >
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </CardActions>
-          </Card>
-        ))}
+      <Grid container spacing={2}>
+        {notesFound &&
+          notes!.map((note) => (
+            <Grid key={note._id?.toString()} size={{ xs: 12, sm: 6, md: 4 }}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">{note.title}</Typography>
+                  <Typography variant="body2">{note.content}</Typography>
+                </CardContent>
+                <CardActions>
+                  <IconButton onClick={() => openEditDialog(note)} size="small">
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => onDeleteNote(note._id!.toString())}
+                    size="small"
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+      </Grid>
 
       <Dialog
         open={dialogOpen}

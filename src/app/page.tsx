@@ -1,10 +1,7 @@
-import Button from "@mui/material/Button";
+import { redirect } from "next/navigation";
+import { getAuthState } from "@/lib/getAuthState";
 
-export default function Home() {
-  return (
-    <main style={{ padding: "2rem" }}>
-      <h1>Notes App</h1>
-      <Button variant="contained">Test Button</Button>
-    </main>
-  );
+export default async function Home() {
+  const isLoggedIn = await getAuthState();
+  redirect(isLoggedIn ? "/notes" : "/login");
 }
