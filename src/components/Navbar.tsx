@@ -11,7 +11,7 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { useTheme } from "@mui/material/styles";
 import { logout } from "@/lib/api/auth";
 import { useColorMode } from "@/components/ThemeRegistry";
-import { Box } from "@mui/material";
+import { Box, Chip } from "@mui/material";
 import Image from "next/image";
 
 interface NavbarProps {
@@ -41,6 +41,15 @@ export default function Navbar({ isLoggedIn }: NavbarProps) {
           <Typography variant="h6" sx={{ color: theme.custom.navTextColor }}>
             My Wall
           </Typography>
+          <Chip
+            label="Beta"
+            size="small"
+            sx={{
+              backgroundColor: theme.custom.navTextColor,
+              color: theme.custom.navBackground,
+              fontWeight: "bold",
+            }}
+          />
         </Box>
         <div>
           <IconButton onClick={toggleColorMode} color="inherit">
