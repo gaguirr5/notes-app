@@ -30,7 +30,9 @@ export default class NoteService {
       throw new Error(`Title must be ${MAX_TITLE_LENGTH} characters or fewer`);
     }
     if (content.length > MAX_CONTENT_LENGTH) {
-      throw new Error(`Content must be ${MAX_CONTENT_LENGTH} characters or fewer`);
+      throw new Error(
+        `Content must be ${MAX_CONTENT_LENGTH} characters or fewer`
+      );
     }
 
     const today = new Date();
@@ -58,7 +60,9 @@ export default class NoteService {
       throw new Error(`Title must be ${MAX_TITLE_LENGTH} characters or fewer`);
     }
     if (content.length > MAX_CONTENT_LENGTH) {
-      throw new Error(`Content must be ${MAX_CONTENT_LENGTH} characters or fewer`);
+      throw new Error(
+        `Content must be ${MAX_CONTENT_LENGTH} characters or fewer`
+      );
     }
 
     const updated = await this.repo.update(id, { title, content });

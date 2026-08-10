@@ -23,9 +23,11 @@ import { useState } from "react";
 import { createNote, updateNote, deleteNote } from "@/lib/api/notes";
 import { Note, NoteFormValues } from "@/types/Note";
 import useNotes from "@/hooks/useNotes";
+import { useTheme } from "@mui/material/styles";
 
 export default function NotesPage() {
   const router = useRouter();
+  const theme = useTheme();
   const { data: notes, error, isLoading, mutate } = useNotes();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -96,8 +98,26 @@ export default function NotesPage() {
   return (
     <Container maxWidth="xl" sx={{ mt: { xs: 4, sm: 8 } }}>
       <Box sx={{ mb: 3, textAlign: "center" }}>
-        <Typography variant="h4">My Wall</Typography>
-        <Button variant="contained" onClick={openCreateDialog} sx={{ mt: 1 }}>
+        <Typography variant="h4" sx={{ fontFamily: "var(--font-script)" }}>
+          My Board
+        </Typography>
+        <Button
+          variant="contained"
+          onClick={openCreateDialog}
+          sx={{
+            mt: 1,
+            // fontFamily: "var(--font-script)",
+            ...(theme.palette.mode === "light"
+              ? { color: theme.custom.navTextColor }
+              : {
+                  backgroundColor: theme.custom.navBackground,
+                  color: theme.custom.navTextColor,
+                }),
+            "&:hover": {
+              opacity: 0.85,
+            },
+          }}
+        >
           New Note
         </Button>
       </Box>
