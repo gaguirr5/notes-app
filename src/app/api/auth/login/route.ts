@@ -42,7 +42,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const token = signToken({ userId: user._id.toString() });
+    const token = signToken({
+      userId: user._id.toString(),
+      displayName: user.displayName,
+    });
 
     const response = NextResponse.json({ id: user._id, email: user.email });
 

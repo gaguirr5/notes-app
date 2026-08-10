@@ -1,9 +1,11 @@
+import { SignUpFormValues } from "@/types/AuthFormValues";
+
 // src/lib/api/auth.ts
-export async function signup(email: string, password: string) {
+export async function signup(newUser: SignUpFormValues) {
   const res = await fetch("/api/auth/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify(newUser),
   });
 
   const data = await res.json();
@@ -29,4 +31,12 @@ export async function login(email: string, password: string) {
 
 export async function logout() {
   await fetch("/api/auth/logout", { method: "POST" });
+}
+
+export async function getCurrentUser(): Promise<{ displayName: string }> {
+  const res = await fetch("/api/auth/me");
+  if (!res.ok) {
+    throw new Error("Not authenticated");
+  }
+  return res.json();
 }

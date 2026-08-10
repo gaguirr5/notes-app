@@ -7,11 +7,12 @@ import { checkRateLimit } from "@/lib/rateLimit";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, password } = body;
+    const { email, password, displayName } = body;
 
     if (stringIsBlank(email)) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
+
     if (stringIsBlank(password)) {
       return NextResponse.json(
         { error: "Password is required" },
@@ -33,10 +34,10 @@ export async function POST(request: NextRequest) {
 
     const usersRepository = new UsersRepository();
     const userService = new UserService(usersRepository);
-    const user = await userService.signup(email, password);
+    const user = await userService.signup(email, password, displayName);
 
     return NextResponse.json(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, displayName: user.displayName },
       { status: 201 }
     );
   } catch (error) {
