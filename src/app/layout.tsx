@@ -23,7 +23,7 @@ const dancingScript = Dancing_Script({
 });
 
 export const metadata: Metadata = {
-  title: "Wall Notes",
+  title:"My Wall",
   description: "A simple full-stack notes app",
 };
 
