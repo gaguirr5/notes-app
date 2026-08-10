@@ -6,16 +6,27 @@ import { isValidEmail } from "@/lib/strings";
 const SALT_ROUNDS = 10;
 const MAX_EMAIL_LENGTH = 254; // RFC 5321 max
 const MAX_PASSWORD_LENGTH = 128;
+const MAX_DISPLAY_NAME_LENGTH = 50;
 
 export default class UserService {
   constructor(private usersRepository: UsersRepository) {}
 
-  async signup(email: string, password: string): Promise<User> {
+  async signup(
+    email: string,
+    password: string,
+    displayName: string
+  ): Promise<User> {
     if (!isValidEmail(email)) {
       throw new Error("Invalid email address");
     }
     if (email.length > MAX_EMAIL_LENGTH) {
       throw new Error("Email is too long");
+    }
+
+    if (displayName.length > MAX_DISPLAY_NAME_LENGTH) {
+      throw new Error(
+        `Display name must be ${MAX_DISPLAY_NAME_LENGTH} characters or fewer`
+      );
     }
     if (password.length < 8) {
       throw new Error("Password must be at least 8 characters");
@@ -33,6 +44,7 @@ export default class UserService {
 
     return this.usersRepository.create({
       email,
+      displayName,
       passwordHash,
       createdAt: new Date(),
     });

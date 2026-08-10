@@ -23,13 +23,14 @@ import { useState } from "react";
 import { createNote, updateNote, deleteNote } from "@/lib/api/notes";
 import { Note, NoteFormValues } from "@/types/Note";
 import useNotes from "@/hooks/useNotes";
+import useUser from "@/hooks/useUser";
 import { useTheme } from "@mui/material/styles";
 
 export default function NotesPage() {
   const router = useRouter();
   const theme = useTheme();
   const { data: notes, error, isLoading, mutate } = useNotes();
-
+  const { data: user } = useUser();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [formError, setFormError] = useState("");
@@ -47,6 +48,7 @@ export default function NotesPage() {
   }
 
   const notesFound = !!notes && notes.length > 0;
+  const displayName = user ? `${user.displayName}'s Wall` : "My Wall";
 
   const openCreateDialog = () => {
     setEditingNote(null);
@@ -99,7 +101,7 @@ export default function NotesPage() {
     <Container maxWidth="xl" sx={{ mt: { xs: 4, sm: 8 } }}>
       <Box sx={{ mb: 3, textAlign: "center" }}>
         <Typography variant="h4" sx={{ fontFamily: "var(--font-script)" }}>
-          My Board
+          {displayName}
         </Typography>
         <Button
           variant="contained"

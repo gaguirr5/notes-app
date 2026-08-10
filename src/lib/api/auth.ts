@@ -30,3 +30,11 @@ export async function login(email: string, password: string) {
 export async function logout() {
   await fetch("/api/auth/logout", { method: "POST" });
 }
+
+export async function getCurrentUser(): Promise<{ displayName: string }> {
+  const res = await fetch("/api/auth/me");
+  if (!res.ok) {
+    throw new Error("Not authenticated");
+  }
+  return res.json();
+}
