@@ -22,25 +22,33 @@ describe("UserService", () => {
   describe("signup", () => {
     it("throws for an invalid email", async () => {
       await expect(
-        userService.signup("not-an-email", "password123")
+        userService.signup("not-an-email", "password123", "Alex")
       ).rejects.toThrow("Invalid email address");
     });
 
     it("throws for a short password", async () => {
       await expect(
-        userService.signup("test@test.com", "short")
+        userService.signup("test@test.com", "short", "Alex")
       ).rejects.toThrow("Password must be at least 8 characters");
+    });
+
+    it("throws for a display name that's too long", async () => {
+      const longName = "a".repeat(51);
+      await expect(
+        userService.signup("test@test.com", "password123", longName)
+      ).rejects.toThrow("Display name must be 50 characters or fewer");
     });
 
     it("throws when the email is already in use", async () => {
       vi.mocked(mockRepo.findByEmail).mockResolvedValue({
         email: "test@test.com",
+        displayName: "Existing User",
         passwordHash: "hashed",
         createdAt: new Date(),
       } as User);
 
       await expect(
-        userService.signup("test@test.com", "password123")
+        userService.signup("test@test.com", "password123", "Alex")
       ).rejects.toThrow("Email already in use");
     });
 
@@ -51,11 +59,33 @@ describe("UserService", () => {
         _id: undefined,
       }));
 
-      const result = await userService.signup("test@test.com", "password123");
+      const result = await userService.signup(
+        "test@test.com",
+        "password123",
+        "Alex"
+      );
 
       expect(result.email).toBe("test@test.com");
-      expect(result.passwordHash).not.toBe("password123"); // never store plaintext
+      expect(result.displayName).toBe("Alex");
+      expect(result.passwordHash).not.toBe("password123");
       expect(mockRepo.create).toHaveBeenCalledOnce();
+    });
+
+    it("creates a user successfully without a display name", async () => {
+      vi.mocked(mockRepo.findByEmail).mockResolvedValue(null);
+      vi.mocked(mockRepo.create).mockImplementation(async (user) => ({
+        ...user,
+        _id: undefined,
+      }));
+
+      const result = await userService.signup(
+        "test@test.com",
+        "password123",
+        undefined
+      );
+
+      expect(result.email).toBe("test@test.com");
+      expect(result.displayName).toBeUndefined();
     });
   });
 });

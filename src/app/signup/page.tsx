@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import { signup } from "@/lib/api/auth";
-import { AuthFormValues } from "@/types/AuthFormValues";
+import { SignUpFormValues } from "@/types/AuthFormValues";
 import { isValidEmail } from "@/lib/strings";
 
 export default function SignupPage() {
@@ -20,12 +20,12 @@ export default function SignupPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<AuthFormValues>();
+  } = useForm<SignUpFormValues>();
 
-  const onSubmit = async ({ email, password }: AuthFormValues) => {
+  const onSubmit = async (newUser: SignUpFormValues) => {
     setError("");
     try {
-      await signup(email, password);
+      await signup(newUser);
       router.push("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Signup failed");
@@ -39,7 +39,7 @@ export default function SignupPage() {
       sx={{
         maxWidth: 400,
         mx: "auto",
-        mt: { xs: 4, xm: 8 },
+        mt: { xs: 4, sm: 8 },
         display: "flex",
         flexDirection: "column",
         gap: 2,
@@ -48,7 +48,13 @@ export default function SignupPage() {
       <Typography variant="h4">Sign Up</Typography>
       {error && <Alert severity="error">{error}</Alert>}
       <TextField
-        label="Email"
+        label="Display Name"
+        {...register("displayName")}
+        error={!!errors.displayName}
+        helperText={errors.displayName?.message}
+      />
+      <TextField
+        label="*Email"
         type="email"
         {...register("email", {
           required: "Email is required",
@@ -59,7 +65,7 @@ export default function SignupPage() {
         helperText={errors.email?.message}
       />
       <TextField
-        label="Password"
+        label="*Password"
         type="password"
         {...register("password", {
           required: "Password is required",

@@ -14,7 +14,7 @@ export default class UserService {
   async signup(
     email: string,
     password: string,
-    displayName: string
+    displayName?: string
   ): Promise<User> {
     if (!isValidEmail(email)) {
       throw new Error("Invalid email address");
@@ -23,7 +23,7 @@ export default class UserService {
       throw new Error("Email is too long");
     }
 
-    if (displayName.length > MAX_DISPLAY_NAME_LENGTH) {
+    if (displayName && displayName.length > MAX_DISPLAY_NAME_LENGTH) {
       throw new Error(
         `Display name must be ${MAX_DISPLAY_NAME_LENGTH} characters or fewer`
       );
@@ -44,7 +44,7 @@ export default class UserService {
 
     return this.usersRepository.create({
       email,
-      displayName,
+      ...(displayName ? { displayName } : {}),
       passwordHash,
       createdAt: new Date(),
     });

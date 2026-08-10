@@ -1,9 +1,11 @@
+import { SignUpFormValues } from "@/types/AuthFormValues";
+
 // src/lib/api/auth.ts
-export async function signup(email: string, password: string) {
+export async function signup(newUser: SignUpFormValues) {
   const res = await fetch("/api/auth/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify(newUser),
   });
 
   const data = await res.json();
