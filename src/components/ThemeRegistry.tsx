@@ -1,8 +1,10 @@
 "use client";
 
 import { createContext, useContext, useMemo, useState, useEffect } from "react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import DarkTheme from "@/styles/themes/darkTheme";
+import LightTheme from "@/styles/themes/lightTheme";
 
 interface ColorModeContextValue {
   toggleColorMode: () => void;
@@ -60,22 +62,23 @@ export default function ThemeRegistry({
     []
   );
 
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-          primary: {
-            main: "#cd9357",
-          },
-        },
-        custom: {
-          navBackground: navBackgroundByMode[mode],
-          navTextColor: navTextColorByMode[mode],
-        },
-      }),
-    [mode]
-  );
+  const theme = useMemo(() => {
+    // createTheme({
+    //   palette: {
+    //     mode,
+    //     primary: {
+    //       main: "#cd9357",
+    //     },
+    //   },
+    //   custom: {
+    //     navBackground: navBackgroundByMode[mode],
+    //     navTextColor: navTextColorByMode[mode],
+    //   },
+    // }),
+    // mode === 'dark'? DarkTheme : LightTheme
+    if (mode === "dark") return DarkTheme();
+    return LightTheme();
+  }, [mode]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
