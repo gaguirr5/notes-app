@@ -13,7 +13,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
     if (stringIsBlank(password)) {
-      return NextResponse.json({ error: "Password is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Password is required" },
+        { status: 400 }
+      );
     }
 
     const ip = request.headers.get("x-forwarded-for") ?? "unknown";
@@ -21,7 +24,9 @@ export async function POST(request: NextRequest) {
     const { success, resetInSeconds } = await checkRateLimit(rateLimitKey);
     if (!success) {
       return NextResponse.json(
-        { error: `Too many signup attempts. Try again in ${Math.ceil(resetInSeconds / 60)} minutes.` },
+        {
+          error: `Too many signup attempts. Try again in ${Math.ceil(resetInSeconds / 60)} minutes.`,
+        },
         { status: 429 }
       );
     }

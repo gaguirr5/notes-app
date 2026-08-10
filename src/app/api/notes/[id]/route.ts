@@ -32,15 +32,15 @@ export async function PUT(
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
   try {
     const { id } = await params;
-    await getOwnedNoteOrThrow(id, userId);
-
     const body = await request.json();
     const { title, content } = body;
 
     const notesRepository = new NotesRepository();
-    const updated = await notesRepository.update(id, { title, content });
+    const noteService = new NoteService(notesRepository);
+    const updated = await noteService.update(id, userId, title, content);
 
     return NextResponse.json(updated);
   } catch {
@@ -59,19 +59,12 @@ export async function DELETE(
 
   try {
     const { id } = await params;
-    await getOwnedNoteOrThrow(id, userId);
-
     const notesRepository = new NotesRepository();
-    await notesRepository.remove(id);
+    const noteService = new NoteService(notesRepository);
+    await noteService.remove(id, userId);
 
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Note not found" }, { status: 404 });
   }
-}
-
-async function getOwnedNoteOrThrow(id: string, userId: string) {
-  const notesRepository = new NotesRepository();
-  const noteService = new NoteService(notesRepository);
-  return noteService.getNoteForUser(id, userId);
 }
