@@ -106,13 +106,8 @@ export default function NotesPage() {
           onClick={openCreateDialog}
           sx={{
             mt: 1,
-            // fontFamily: "var(--font-script)",
-            ...(theme.palette.mode === "light"
-              ? { color: theme.custom.navTextColor }
-              : {
-                  backgroundColor: theme.custom.navBackground,
-                  color: theme.custom.navTextColor,
-                }),
+            color: theme.custom.navTextColor,
+            backgroundColor: theme.custom.navBackground,
             "&:hover": {
               opacity: 0.85,
             },
