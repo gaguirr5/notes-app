@@ -39,7 +39,7 @@ export default function Navbar({ isLoggedIn }: NavbarProps) {
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Image src="/logo.png" alt="Wall Notes logo" width={32} height={32} />
           <Typography variant="h6" sx={{ color: theme.custom.navTextColor }}>
-            Wall Notes
+            My Wall
           </Typography>
         </Box>
         <div>
