@@ -7,6 +7,7 @@ RUN npm ci
 # ---- Stage 2: builder ----
 FROM node:20-alpine AS builder
 WORKDIR /app
+ENV DOCKER_BUILD=true
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
