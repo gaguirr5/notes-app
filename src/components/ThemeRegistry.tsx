@@ -18,16 +18,6 @@ export function useColorMode() {
   return useContext(ColorModeContext);
 }
 
-const navBackgroundByMode = {
-  light: "#cd9357",
-  dark: "#1976d2",
-};
-
-const navTextColorByMode = {
-  light: "#ede9cc",
-  dark: "#f5f5f5",
-};
-
 export default function ThemeRegistry({
   children,
 }: {
@@ -63,19 +53,6 @@ export default function ThemeRegistry({
   );
 
   const theme = useMemo(() => {
-    // createTheme({
-    //   palette: {
-    //     mode,
-    //     primary: {
-    //       main: "#cd9357",
-    //     },
-    //   },
-    //   custom: {
-    //     navBackground: navBackgroundByMode[mode],
-    //     navTextColor: navTextColorByMode[mode],
-    //   },
-    // }),
-    // mode === 'dark'? DarkTheme : LightTheme
     if (mode === "dark") return DarkTheme();
     return LightTheme();
   }, [mode]);
