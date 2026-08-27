@@ -1,7 +1,7 @@
 import { User } from "@/types/User";
-import BaseRespository from "./BaseRepository";
+import BaseRepository from "./BaseRepository";
 
-export default class UsersRepository extends BaseRespository<User> {
+export default class UsersRepository extends BaseRepository<User> {
   protected collectionName: string = "users";
 
   async findByEmail(email: string): Promise<User | null> {

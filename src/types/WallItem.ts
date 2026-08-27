@@ -14,7 +14,7 @@ export type WallItemTypeValue =
   (typeof WallItemType)[keyof typeof WallItemType];
 
 export interface WallItemBase {
-  _id?: ObjectId;
+  _id: string;
   userId: string;
   x: number;
   y: number;
