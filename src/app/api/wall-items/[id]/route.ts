@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
 import { getUserIdFromRequest } from "@/lib/auth";
-import NoteService from "@/services/NoteService";
-import NotesRepository from "@/repositories/mongodb/NotesRepository";
+import WallItemRepository from "@/repositories/mongodb/WallItemRepository";
+import WallItemService from "@/services/WallItemService";
 import { ApiParams, IdParam } from "@/types/ApiParams";
+import { WallItemUpdate } from "@/types/WallItem";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
@@ -14,13 +15,13 @@ export async function GET(
   }
   try {
     const { id } = await params;
-    const notesRepository = new NotesRepository();
-    const noteService = new NoteService(notesRepository);
-    const note = await noteService.getNoteForUser(id, userId);
+    const repo = new WallItemRepository();
+    const service = new WallItemService(repo);
+    const item = await service.getByUser(id, userId);
 
-    return NextResponse.json(note);
+    return NextResponse.json(item);
   } catch {
-    return NextResponse.json({ error: "Note not found" }, { status: 404 });
+    return NextResponse.json({ error: "Item not found" }, { status: 404 });
   }
 }
 
@@ -35,16 +36,15 @@ export async function PUT(
 
   try {
     const { id } = await params;
-    const body = await request.json();
-    const { title, content } = body;
+    const body: WallItemUpdate = await request.json();
 
-    const notesRepository = new NotesRepository();
-    const noteService = new NoteService(notesRepository);
-    const updated = await noteService.update(id, userId, title, content);
+    const repo = new WallItemRepository();
+    const service = new WallItemService(repo);
+    const updated = await service.update(id, userId, body);
 
     return NextResponse.json(updated);
   } catch {
-    return NextResponse.json({ error: "Note not found" }, { status: 404 });
+    return NextResponse.json({ error: "Item not found" }, { status: 404 });
   }
 }
 
@@ -59,12 +59,12 @@ export async function DELETE(
 
   try {
     const { id } = await params;
-    const notesRepository = new NotesRepository();
-    const noteService = new NoteService(notesRepository);
-    await noteService.remove(id, userId);
+    const repo = new WallItemRepository();
+    const service = new WallItemService(repo);
+    await service.remove(id, userId);
 
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json({ error: "Note not found" }, { status: 404 });
+    return NextResponse.json({ error: "Item not found" }, { status: 404 });
   }
 }
