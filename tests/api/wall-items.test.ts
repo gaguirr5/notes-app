@@ -6,13 +6,13 @@ vi.mock("@/lib/auth", () => ({
 }));
 
 import { getUserIdFromRequest } from "@/lib/auth";
-import { GET } from "@/app/api/notes/route";
+import { GET } from "@/app/api/wall-items/route";
 
 describe("GET /api/notes", () => {
   it("returns 401 when not authenticated", async () => {
     vi.mocked(getUserIdFromRequest).mockReturnValue(null);
 
-    const request = new NextRequest("http://localhost:3000/api/notes");
+    const request = new NextRequest("http://localhost:3000/api/wall-items");
     const response = await GET(request);
     const body = await response.json();
 
