@@ -39,7 +39,7 @@ export default class WallItemService {
     updates: WallItemUpdate
   ): Promise<WallItem> {
     const existing = await this.getByUser(id, userId); // confirms ownership first
-    if (!existing) throw new Error("Item not found");
+    if (!existing) throw new Error("Item does not exist");
 
     const merged = {
       ...existing,
@@ -47,11 +47,9 @@ export default class WallItemService {
     } as WallItem;
 
     validateWallItem(merged);
+    const updated = await this.repo.update(id, updates);
+    if (!updated) throw new Error("Item was not updated");
 
-    const updated = await this.repo.update(id, merged);
-    if (!updated) {
-      throw new Error("Item not found");
-    }
     return updated;
   }
 

@@ -8,7 +8,7 @@ vi.mock("@/lib/auth", () => ({
 import { getUserIdFromRequest } from "@/lib/auth";
 import { GET } from "@/app/api/wall-items/route";
 
-describe("GET /api/notes", () => {
+describe("GET /api/home", () => {
   it("returns 401 when not authenticated", async () => {
     vi.mocked(getUserIdFromRequest).mockReturnValue(null);
 

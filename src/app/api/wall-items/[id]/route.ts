@@ -44,7 +44,10 @@ export async function PUT(
 
     return NextResponse.json(updated);
   } catch {
-    return NextResponse.json({ error: "Item not found" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Failed to update item" },
+      { status: 404 }
+    );
   }
 }
 

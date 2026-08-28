@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import WallItemService from "@/services/WallItemService";
 import WallItemRepository from "@/repositories/mongodb/WallItemRepository";
-import { Note } from "@/types/Note";
-import { NoteWallItem, WallItem } from "@/types/WallItem";
+import { WallItem, WallItemType } from "@/types/WallItem";
 
 function createMockRepository() {
   return {
@@ -14,26 +13,29 @@ function createMockRepository() {
   } as unknown as WallItemRepository;
 }
 
-const wallItem = {
-  _id: Math.random().toString(),
-  userId: "user-1",
-  x: Math.random(),
-  y: Math.random(),
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+// const wallItem = {
+//   _id: Math.random().toString(),
+//   userId: "user-1",
+//   x: Math.random(),
+//   y: Math.random(),
+//   createdAt: new Date(),
+//   updatedAt: new Date(),
+// };
 
-function makeNote(overrides: Partial<NoteWallItem> = {}): WallItem {
-  return {
-    ...wallItem,
-    type: "note",
-    content: {
-      title: "Test node",
-      content: "123",
-    },
-    ...overrides,
-  };
-}
+// function makeItem(
+//   type: WallItemTypeValue,
+//   overrides: Partial<WallItem> = {}
+// ): WallItem {
+//   return {
+//     ...wallItem,
+//     type,
+//     content: {
+//       title: "Test node",
+//       content: "123",
+//     },
+//     ...overrides,
+//   };
+// }
 
 describe("WallItemService", () => {
   let mockRepo: WallItemRepository;
@@ -45,54 +47,60 @@ describe("WallItemService", () => {
   });
 
   describe("create", () => {
-    const note = makeNote({
-      content: { title: "x".repeat(201), content: "test" },
+    it("throws when title is too long", async () => {
+      const noteData = {
+        type: WallItemType.Note,
+        x: 0,
+        y: 0,
+        content: { title: "x".repeat(201), content: "test" },
+      };
+      await expect(wallItemService.create("user-1", noteData)).rejects.toThrow(
+        "Title must be 200 characters or fewer"
+      );
     });
-    it("title is too long", async () => {
-      await expect(wallItemService.create(note._id, note)).rejects.toThrow(
-        `Title must be 200 characters or fewer`
+    it("throws when content is too long", async () => {
+      const noteData = {
+        type: WallItemType.Note,
+        x: 0,
+        y: 0,
+        content: { content: "x".repeat(10001) },
+      };
+      await expect(wallItemService.create("user-1", noteData)).rejects.toThrow(
+        "Content must be 10000 characters or fewer"
       );
     });
 
-    // it("defaults content to an empty string when omitted", async () => {
-    //   vi.mocked(mockRepo.create).mockImplementation(
-    //     async (note) => note as Note
-    //   );
+    it("throws when coordinates are missing", async () => {
+      const noteData = {
+        type: WallItemType.Note,
+        x: undefined,
+        y: undefined,
+        content: { content: "test" },
+      } as any;
+      await expect(wallItemService.create("user-1", noteData)).rejects.toThrow(
+        "Coordinates missing"
+      );
+    });
 
-    //   await wallItemService.create("user-1", "My Title");
+    it("creates a valid note successfully", async () => {
+      vi.mocked(mockRepo.create).mockImplementation(
+        async (item) =>
+          ({
+            ...item,
+            _id: "generated-id",
+          }) as WallItem
+      );
 
-    //   expect(mockRepo.create).toHaveBeenCalledWith(
-    //     expect.objectContaining({ content: "" })
-    //   );
-    // });
+      const noteData = {
+        type: WallItemType.Note,
+        x: 100,
+        y: 200,
+        content: { title: "Hello", content: "World" },
+      };
+
+      const result = await wallItemService.create("user-1", noteData);
+      expect(result.userId).toBe("user-1");
+      expect(mockRepo.create).toHaveBeenCalledOnce();
+    });
   });
-
-  // describe("getNoteForUser — authorization", () => {
-  //   it("throws when the note doesn't exist", async () => {
-  //     vi.mocked(mockRepo.findById).mockResolvedValue(null);
-
-  //     await expect(
-  //       wallItemService.getNoteForUser("note-1", "user-1")
-  //     ).rejects.toThrow("Note not found");
-  //   });
-
-  //   it("throws when the note belongs to a different user", async () => {
-  //     vi.mocked(mockRepo.findById).mockResolvedValue(
-  //       makeNote({ userId: "someone-else" })
-  //     );
-
-  //     await expect(
-  //       wallItemService.getNoteForUser("note-1", "user-1")
-  //     ).rejects.toThrow("Note not found");
-  //   });
-
-  //   it("returns the note when it belongs to the requesting user", async () => {
-  //     const note = makeNote({ userId: "user-1" });
-  //     vi.mocked(mockRepo.findById).mockResolvedValue(note);
-
-  //     const result = await wallItemService.getNoteForUser("note-1", "user-1");
-
-  //     expect(result).toEqual(note);
-  //   });
-  // });
 });

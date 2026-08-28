@@ -41,8 +41,14 @@ function validateTimer({ content: { time } }: TimerWallItem): void {
 
 export function validateWallItem(data: WallItem): void {
   if (!data) throw new Error("No data found");
-  if (!data.x || !data.y) throw new Error("Coordinates missing");
-
+  if (
+    data.x === undefined ||
+    data.x === null ||
+    data.y === undefined ||
+    data.y === null
+  ) {
+    throw new Error("Coordinates missing");
+  }
   switch (data.type) {
     case WallItemType.Note:
       return validateNote(data);

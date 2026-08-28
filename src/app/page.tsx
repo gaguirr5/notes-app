@@ -3,5 +3,5 @@ import { getAuthState } from "@/lib/getAuthState";
 
 export default async function Home() {
   const isLoggedIn = await getAuthState();
-  redirect(isLoggedIn ? "/notes" : "/login");
+  redirect(isLoggedIn ? "/home" : "/login");
 }
