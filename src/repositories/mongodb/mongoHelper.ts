@@ -9,6 +9,7 @@ export function convertObjectIdToString<T extends { _id: ObjectId }>(
   doc: T
 ): T extends { _id: ObjectId } ? Omit<T, "_id"> & { _id: string } : never {
   const { _id, ...rest } = doc;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return { ...rest, _id: _id.toString() } as any;
 }
 

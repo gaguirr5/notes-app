@@ -14,6 +14,7 @@ export default class UsersRepository extends BaseRepository<UserDocument> {
 
   async create(user: Omit<User, "_id">): Promise<User> {
     const collection = await this.getCollection();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await collection.insertOne(user as any); //need to look at this with OptionalId
     return { ...user, _id: result.insertedId.toString() };
   }

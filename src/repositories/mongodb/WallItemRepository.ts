@@ -35,6 +35,7 @@ export default class WallItemRepository extends BaseRepository<WallItemDocument>
 
   async create(item: Omit<WallItem, "_id">): Promise<WallItem> {
     const collection = await this.getCollection();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await collection.insertOne(item as any); //need to look at this with OptionalId
     return { ...item, _id: result.insertedId.toString() } as WallItem;
   }
@@ -43,6 +44,7 @@ export default class WallItemRepository extends BaseRepository<WallItemDocument>
     const collection = await this.getCollection();
     const doc = await collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       { $set: { ...updates, updatedAt: new Date() } as any },
       { returnDocument: "after" }
     );

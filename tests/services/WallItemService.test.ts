@@ -71,6 +71,7 @@ describe("WallItemService", () => {
     });
 
     it("throws when coordinates are missing", async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const noteData = {
         type: WallItemType.Note,
         x: undefined,
