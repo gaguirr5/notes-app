@@ -22,12 +22,14 @@ import { KeyedMutator } from "swr";
 
 interface ConfigureNoteProps {
   edit?: NoteWallItem;
+  position?: { x: number; y: number };
   mutate: KeyedMutator<WallItem[]>;
   onClose: () => void;
 }
 
 export default function ConfigureNote({
   edit,
+  position,
   mutate,
   onClose,
 }: ConfigureNoteProps) {
@@ -46,8 +48,8 @@ export default function ConfigureNote({
     try {
       if (!edit) {
         const newNote: WallItemCreation = {
-          x: 0,
-          y: 0,
+          x: position?.x ?? 0,
+          y: position?.y ?? 0,
           content: data,
           type: WallItemType.Note,
         };
