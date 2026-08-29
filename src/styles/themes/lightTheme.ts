@@ -9,8 +9,10 @@ export default function LightTheme() {
       mode: "light",
     },
     custom: {
-      navBackground: "#ba8e22",
-      navTextColor: "#ede9cc",
+      // navBackground: "#ba8e22",
+      navBackground: "#f7f6ee",
+      // navTextColor: "#ede9cc",
+      navTextColor: "#513a28",
       delete: "#d40032",
     },
   });

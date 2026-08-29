@@ -52,7 +52,10 @@ export default function Navbar({ isLoggedIn }: NavbarProps) {
           />
         </Box>
         <div>
-          <IconButton onClick={toggleColorMode} color="inherit">
+          <IconButton
+            onClick={toggleColorMode}
+            sx={{ color: theme.custom.navTextColor }}
+          >
             {theme.palette.mode === "dark" ? (
               <Brightness7Icon />
             ) : (
@@ -60,12 +63,15 @@ export default function Navbar({ isLoggedIn }: NavbarProps) {
             )}
           </IconButton>
           {isLoggedIn ? (
-            <Button color="inherit" onClick={handleLogout}>
+            <Button
+              sx={{ color: theme.custom.navTextColor }}
+              onClick={handleLogout}
+            >
               Log Out
             </Button>
           ) : (
             <Button
-              color="inherit"
+              sx={{ color: theme.custom.navTextColor }}
               onClick={() =>
                 router.push(pathname === "/login" ? "/signup" : "/login")
               }

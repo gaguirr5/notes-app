@@ -29,8 +29,9 @@ import DraggableNote from "@/components/wall-items/notes/DraggableNote";
 import NoteItem from "@/components/wall-items/notes/NoteItem";
 import { updateWallItem } from "@/lib/api/wall-items";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import TaskIcon from "@mui/icons-material/Task";
@@ -69,8 +70,8 @@ export default function NotesPage() {
   const itemsFound = !!items && items.length > 0;
   const displayName = user ? `${user.displayName}'s Wall` : "My Wall";
 
-  const WALL_WIDTH = 1802;
-  const WALL_HEIGHT = 1102;
+  const WALL_WIDTH = 1820;
+  const WALL_HEIGHT = 1120;
 
   const getNewItemPosition = () => {
     if (!wallRef.current) return { x: 0, y: 0 };
@@ -139,7 +140,7 @@ export default function NotesPage() {
           <ButtonGroup>
             <Tooltip title="Edit Wall Name">
               <IconButton sx={{ color: mainOptionsColor }} disabled>
-                <EditIcon />
+                <MenuIcon />
               </IconButton>
             </Tooltip>
             <Box
@@ -154,10 +155,11 @@ export default function NotesPage() {
             >
               <Tooltip title={openOptions ? "Close" : "Add item"}>
                 <IconButton
-                  sx={{ color: openOptions ? "" : mainOptionsColor }}
+                  sx={{ color: openOptions ? "" : "#38ad48" }}
+
                   onClick={() => setOpenOptions((prev) => !prev)}
                 >
-                  <AddBoxIcon />
+                  {openOptions ? <CloseIcon /> : <AddIcon />}
                 </IconButton>
               </Tooltip>
               {openOptions && (
@@ -240,8 +242,8 @@ export default function NotesPage() {
                 width: WALL_WIDTH,
                 height: WALL_HEIGHT,
                 overflow: "auto",
-                border: "1px dashed",
-                borderColor: "divider",
+                border: `10px solid #483932`,
+                backgroundColor: "#c89e7a",
               }}
             >
               {items.map((item) =>
