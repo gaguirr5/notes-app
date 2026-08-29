@@ -11,6 +11,7 @@ export default function LightTheme() {
     custom: {
       navBackground: "#ba8e22",
       navTextColor: "#ede9cc",
+      delete: "#d40032",
     },
   });
 }
