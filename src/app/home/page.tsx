@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import useWallItems from "@/hooks/useWallItems";
 import { WallItemType } from "@/types/WallItem";
-import ConfigureNote from "@/components/WallItems/Notes/ConfigureNote";
+import ConfigureNote from "@/components/wall-items/notes/ConfigureNote";
 import {
   DndContext,
   DragEndEvent,
@@ -25,8 +25,8 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import DraggableNote from "@/components/WallItems/Notes/DraggableNote";
-import NoteItem from "@/components/WallItems/Notes/NoteItem";
+import DraggableNote from "@/components/wall-items/notes/DraggableNote";
+import NoteItem from "@/components/wall-items/notes/NoteItem";
 import { updateWallItem } from "@/lib/api/wall-items";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import AddBoxIcon from "@mui/icons-material/AddBox";
