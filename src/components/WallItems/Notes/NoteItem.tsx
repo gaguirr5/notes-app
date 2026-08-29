@@ -1,5 +1,5 @@
 import { NoteWallItem, WallItem, WallItemType } from "@/types/WallItem";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import ItemActions from "../ItemActions";
 import { deleteWallItem } from "@/lib/api/wall-items";
 import ConfigureNote from "./ConfigureNote";
@@ -36,15 +36,19 @@ export default function NoteItem({ data, mutate }: NoteItemProps) {
     <>
       <Card key={_id} sx={{ width: { xs: "100%", sm: 280 } }}>
         <CardContent>
+          <ItemActions
+            item={data}
+            onEdit={() => setOpenEditNote(true)}
+            onDelete={() => setOpenDeleteNoteDialog(true)}
+          />
           <Typography variant="h6">{title ?? ""}</Typography>
-          <Typography variant="body2">{content}</Typography>
+          <Typography
+            variant="body2"
+            sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+          >
+            {content}
+          </Typography>
         </CardContent>
-
-        <ItemActions
-          item={data}
-          onEdit={() => setOpenEditNote(true)}
-          onDelete={() => setOpenDeleteNoteDialog(true)}
-        />
       </Card>
 
       {openEditNote && (

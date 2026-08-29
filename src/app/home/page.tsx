@@ -5,10 +5,16 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
-import Button from "@mui/material/Button";
 import { useRef, useState } from "react";
 import useUser from "@/hooks/useUser";
-import { useTheme, useMediaQuery } from "@mui/material";
+import {
+  useTheme,
+  useMediaQuery,
+  IconButton,
+  ButtonGroup,
+  Tooltip,
+  alpha,
+} from "@mui/material";
 import useWallItems from "@/hooks/useWallItems";
 import { WallItemType } from "@/types/WallItem";
 import ConfigureNote from "@/components/WallItems/Notes/ConfigureNote";
@@ -23,6 +29,11 @@ import DraggableNote from "@/components/WallItems/Notes/DraggableNote";
 import NoteItem from "@/components/WallItems/Notes/NoteItem";
 import { updateWallItem } from "@/lib/api/wall-items";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import EditIcon from "@mui/icons-material/Edit";
+import StickyNote2Icon from "@mui/icons-material/StickyNote2";
+import ChecklistIcon from "@mui/icons-material/Checklist";
+import TaskIcon from "@mui/icons-material/Task";
 
 export default function NotesPage() {
   const router = useRouter();
@@ -35,6 +46,8 @@ export default function NotesPage() {
   const { data: user } = useUser();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newItemPosition, setNewItemPosition] = useState({ x: 0, y: 0 });
+  const [openOptions, setOpenOptions] = useState(false);
+  const mainOptionsColor = theme.custom.navBackground;
 
   // Requires the pointer to move at least 8px before a drag actually
   // starts. Without this, dnd-kit treats every pointerdown as a
@@ -118,23 +131,71 @@ export default function NotesPage() {
 
   return (
     <>
-      <Container maxWidth="xl" sx={{ mt: { xs: 4, sm: 8 } }}>
-        <Box sx={{ mb: 3, textAlign: "center" }}>
+      <Container maxWidth="xl" sx={{ mt: { xs: 2, sm: 6 } }}>
+        <Box sx={{ mb: 2, textAlign: "center" }}>
           <Typography variant="h4" sx={{ fontFamily: "var(--font-script)" }}>
             {displayName}
           </Typography>
-          <Button
-            variant="contained"
-            onClick={openCreateDialog}
-            sx={{
-              mt: 1,
-              color: theme.custom.navTextColor,
-              backgroundColor: theme.custom.navBackground,
-              "&:hover": { opacity: 0.85 },
-            }}
-          >
-            New Note
-          </Button>
+          <ButtonGroup>
+            <Tooltip title="Edit Wall Name">
+              <IconButton sx={{ color: mainOptionsColor }} disabled>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                borderRadius: "2rem",
+                backgroundColor: openOptions
+                  ? `${alpha(mainOptionsColor, 0.07)}`
+                  : "",
+              }}
+            >
+              <Tooltip title={openOptions ? "Close" : "Add item"}>
+                <IconButton
+                  sx={{ color: openOptions ? "" : mainOptionsColor }}
+                  onClick={() => setOpenOptions((prev) => !prev)}
+                >
+                  <AddBoxIcon />
+                </IconButton>
+              </Tooltip>
+              {openOptions && (
+                <Box>
+                  <Tooltip title="Add Note">
+                    <IconButton
+                      sx={{
+                        color: openOptions ? "#f1c89c" : "",
+                      }}
+                      onClick={openCreateDialog}
+                    >
+                      <StickyNote2Icon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Add Checklist">
+                    <IconButton
+                      disabled
+                      sx={{
+                        color: openOptions ? "#90c5df" : "",
+                      }}
+                    >
+                      <ChecklistIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Add Task">
+                    <IconButton
+                      disabled
+                      sx={{
+                        color: openOptions ? "#d5a9e7" : "",
+                      }}
+                    >
+                      <TaskIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+            </Box>
+          </ButtonGroup>
         </Box>
 
         {!itemsFound && <Typography>No items yet.</Typography>}

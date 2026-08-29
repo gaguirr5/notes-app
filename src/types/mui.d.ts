@@ -8,6 +8,7 @@ declare module "@mui/material/styles" {
     custom: {
       navBackground: string;
       navTextColor: string;
+      delete: string;
     };
   }
   interface ThemeOptions {
@@ -17,6 +18,7 @@ declare module "@mui/material/styles" {
     custom?: {
       navBackground: string;
       navTextColor: string;
+      delete: string;
     };
   }
 }

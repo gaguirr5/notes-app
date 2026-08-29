@@ -13,6 +13,7 @@ export default function DarkTheme() {
     custom: {
       navBackground: "#1976d2",
       navTextColor: "#f5f5f5",
+      delete: "#8b0101",
     },
   });
 }
